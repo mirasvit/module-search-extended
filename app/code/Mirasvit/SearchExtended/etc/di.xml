@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <!--register index-->
+    <type name="Mirasvit\Search\Model\Index\Pool">
+        <arguments>
+            <argument name="indexes" xsi:type="array">
+                <item name="magento_review_review" xsi:type="string">Mirasvit\SearchExtended\Model\Index\Magento\Review\Review\Index</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <!--register index provider for native magento mysql search-->
+    <type name="Magento\Framework\Search\Adapter\Mysql\Mapper">
+        <arguments>
+            <argument name="indexProviders" xsi:type="array">
+                <item name="magento_review_review" xsi:type="object">Mirasvit\Search\Model\Adapter\Mapper\IndexBuilder</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <!--registering data provider for native magento mysql search-->
+    <type name="Magento\Framework\Search\Adapter\Mysql\Aggregation\DataProviderContainer">
+        <arguments>
+            <argument name="dataProviders" xsi:type="array">
+                <item name="magento_review_review" xsi:type="object">Mirasvit\Search\Model\Adapter\Aggregation\DataProvider</item>
+            </argument>
+        </arguments>
+    </type>
+</config>

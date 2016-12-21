@@ -1,0 +1,24 @@
+<?php
+//@codingStandardsIgnoreFile
+/** @var \Mirasvit\Search\Block\Index\Base $block */
+?>
+<div class="search__result-index search__index-mirasvit-kb-article">
+    <?= $block->getPager() ?>
+    <ol class="items review-items">
+        <?php /** @var \Magento\Review\Model\Review $review */ ?>
+        <?php foreach ($block->getCollection() as $review): ?>
+            <li class="item review-item">
+                <div class="review-title">
+                    <a href="<?=$review->getProductUrl($review->getEntityPkValue(), $review->getStoreId()) ?>">
+                        <?=$block->escapeHtml($review->getTitle()) ?>
+                    </a>
+                </div>
+                <div class="review-content">
+                    <?=nl2br($block->escapeHtml($review->getDetail())) ?>
+                </div>
+            </li>
+        <?php endforeach ?>
+    </ol>
+    <?= $block->getPager() ?>
+</div>
+
