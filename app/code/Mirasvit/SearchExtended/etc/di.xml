@@ -3,10 +3,10 @@
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
 
     <!--register index-->
-    <type name="Mirasvit\Search\Model\Index\Pool">
+    <type name="Mirasvit\Search\Api\Repository\IndexRepositoryInterface">
         <arguments>
-            <argument name="indexes" xsi:type="array">
-                <item name="magento_review_review" xsi:type="string">Mirasvit\SearchExtended\Model\Index\Magento\Review\Review\Index</item>
+            <argument name="indices" xsi:type="array">
+                <item name="magento_review_review" xsi:type="string">Mirasvit\SearchExtended\Index\Magento\Review\Review\Index</item>
             </argument>
         </arguments>
     </type>

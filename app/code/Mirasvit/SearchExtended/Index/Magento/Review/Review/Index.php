@@ -1,9 +1,11 @@
 <?php
-namespace Mirasvit\SearchExtended\Model\Index\Magento\Review\Review;
+
+namespace Mirasvit\SearchExtended\Index\Magento\Review\Review;
 
 use Magento\Review\Model\Review;
 use Magento\Review\Model\ResourceModel\Review\CollectionFactory as ReviewCollectionFactory;
 use Mirasvit\Search\Model\Index\AbstractIndex;
+use Mirasvit\Search\Model\Index\Context;
 use Mirasvit\Search\Model\Index\IndexerFactory;
 use Mirasvit\Search\Model\Index\SearcherFactory;
 
@@ -12,21 +14,16 @@ class Index extends AbstractIndex
     /**
      * @var ReviewCollectionFactory
      */
-    protected $collectionFactory;
+    private $collectionFactory;
 
-    /**
-     * @param ReviewCollectionFactory $collectionFactory
-     * @param IndexerFactory          $indexer
-     * @param SearcherFactory         $searcher
-     */
     public function __construct(
         ReviewCollectionFactory $collectionFactory,
-        IndexerFactory $indexer,
-        SearcherFactory $searcher
+        Context $context,
+        $dataMappers = []
     ) {
         $this->collectionFactory = $collectionFactory;
 
-        parent::__construct($indexer, $searcher);
+        parent::__construct($context, $dataMappers);
     }
 
     /**
@@ -36,17 +33,7 @@ class Index extends AbstractIndex
      */
     public function getName()
     {
-        return __('Review')->__toString();
-    }
-
-    /**
-     * Index scope name (for backend)
-     *
-     * @return string
-     */
-    public function getGroup()
-    {
-        return __('Magento')->__toString();
+        return 'Magento / Review';
     }
 
     /**
@@ -54,7 +41,7 @@ class Index extends AbstractIndex
      *
      * @return string
      */
-    public function getCode()
+    public function getIdentifier()
     {
         return 'magento_review_review';
     }
@@ -88,11 +75,11 @@ class Index extends AbstractIndex
      *
      * @return \Magento\Framework\Data\Collection\AbstractDb
      */
-    protected function buildSearchCollection()
+    public function buildSearchCollection()
     {
         $collection = $this->collectionFactory->create();
 
-        $this->searcher->joinMatches($collection, 'main_table.review_id');
+        $this->context->getSearcher()->joinMatches($collection, 'main_table.review_id');
 
         return $collection;
     }
@@ -100,10 +87,10 @@ class Index extends AbstractIndex
     /**
      * Collection of searchable entities for indexation
      *
-     * @param int   $storeId
+     * @param int $storeId
      * @param array $entityIds
-     * @param int   $lastEntityId
-     * @param int   $limit
+     * @param int $lastEntityId
+     * @param int $limit
      *
      * @return \Magento\Framework\Data\Collection\AbstractDb
      */
