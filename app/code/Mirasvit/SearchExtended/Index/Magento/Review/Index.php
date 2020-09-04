@@ -1,6 +1,6 @@
 <?php
 
-namespace Mirasvit\SearchExtended\Index\Magento\Review\Review;
+namespace Mirasvit\SearchExtended\Index\Magento\Review;
 
 use Magento\Review\Model\Review;
 use Magento\Review\Model\ResourceModel\Review\CollectionFactory as ReviewCollectionFactory;
@@ -8,50 +8,41 @@ use Mirasvit\Search\Model\Index\AbstractIndex;
 use Mirasvit\Search\Model\Index\Context;
 use Mirasvit\Search\Model\Index\IndexerFactory;
 use Mirasvit\Search\Model\Index\SearcherFactory;
+use Magento\Framework\Data\Collection;
 
 class Index extends AbstractIndex
 {
-    /**
-     * @var ReviewCollectionFactory
-     */
     private $collectionFactory;
 
     public function __construct(
         ReviewCollectionFactory $collectionFactory,
-        Context $context,
-        $dataMappers = []
+        Context $context
     ) {
         $this->collectionFactory = $collectionFactory;
 
-        parent::__construct($context, $dataMappers);
+        parent::__construct($context);
     }
 
     /**
      * Index name (for backend)
-     *
-     * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return 'Magento / Review';
     }
 
     /**
      * Unique index code (used in layout files and di.xml)
-     *
-     * @return string
      */
-    public function getIdentifier()
+    public function getIdentifier(): string
     {
-        return 'magento_review_review';
+        return 'magento_review';
     }
 
     /**
      * Possible searchable attributes
-     *
-     * @return array
      */
-    public function getAttributes()
+    public function getAttributes(): array
     {
         return [
             'title'    => __('Summary'),
@@ -62,23 +53,18 @@ class Index extends AbstractIndex
 
     /**
      * Primary key (database table column) for searchable content entities table
-     *
-     * @return string
      */
-    public function getPrimaryKey()
+    public function getPrimaryKey(): string
     {
         return 'review_id';
     }
 
     /**
      * Collection of founded entities
-     *
-     * @return \Magento\Framework\Data\Collection\AbstractDb
      */
-    public function buildSearchCollection()
+    public function buildSearchCollection(): Collection
     {
         $collection = $this->collectionFactory->create();
-
         $this->context->getSearcher()->joinMatches($collection, 'main_table.review_id');
 
         return $collection;
@@ -86,15 +72,8 @@ class Index extends AbstractIndex
 
     /**
      * Collection of searchable entities for indexation
-     *
-     * @param int $storeId
-     * @param array $entityIds
-     * @param int $lastEntityId
-     * @param int $limit
-     *
-     * @return \Magento\Framework\Data\Collection\AbstractDb
      */
-    public function getSearchableEntities($storeId, $entityIds = null, $lastEntityId = null, $limit = 100)
+    public function getIndexableDocuments(int $storeId, array $entityIds = null, int $lastEntityId = null, int $limit = 100): array
     {
         $collection = $this->collectionFactory->create()
             ->addStatusFilter(Review::STATUS_APPROVED)
@@ -108,6 +87,6 @@ class Index extends AbstractIndex
             ->setPageSize($limit)
             ->setOrder('main_table.review_id');
 
-        return $collection;
+        return $collection->toArray()['items'];
     }
 }
