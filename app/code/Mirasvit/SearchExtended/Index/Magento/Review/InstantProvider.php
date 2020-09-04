@@ -4,11 +4,22 @@ declare(strict_types=1);
 namespace Mirasvit\SearchExtended\Index\Magento\Review;
 
 use Mirasvit\Search\Index\AbstractInstantProvider;
-use Magento\Framework\App\ObjectManager;
 use Magento\Review\Model\Review;
+use Mirasvit\Search\Service\IndexService;
 
 class InstantProvider extends AbstractInstantProvider
 {
+    private $review;
+
+    public function __construct (
+        Review $review,
+        IndexService $indexService
+    ){
+        $this->review = $review;
+
+        parent::__construct($indexService);
+    }
+
     public function getItems(int $storeId, int $limit): array
     {
         $items = [];
@@ -40,8 +51,7 @@ class InstantProvider extends AbstractInstantProvider
     public function map(array $documentData, int $storeId): array
     {
         foreach ($documentData as $entityId => $itm) {
-            $om = ObjectManager::getInstance();
-            $entity = $om->create(Review::class)->load($entityId);
+            $entity = $this->review->load($entityId);
             $map = $this->mapItem($entity, $storeId);
             $documentData[$entityId][self::INSTANT_KEY] = $map;
         }

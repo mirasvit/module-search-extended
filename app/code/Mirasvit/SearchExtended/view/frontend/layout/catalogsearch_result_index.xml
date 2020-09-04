@@ -5,7 +5,7 @@
 	<referenceBlock name="mst.search.result">
 		<block class="Mirasvit\Search\Block\Index\Base" name="magento_review"
 			template="Mirasvit_SearchExtended::index/magento/review/review.phtml">
-			<block class="Magento\Theme\Block\Html\Pager" name="pager" as="pager" cacheable="false"/>
+			<block class="Magento\Theme\Block\Html\Pager" name="pager" as="pager"/>
 		</block>
 	</referenceBlock>
 	</body>
