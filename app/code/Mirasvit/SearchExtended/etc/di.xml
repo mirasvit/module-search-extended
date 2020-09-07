@@ -2,29 +2,58 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
 
-    <!--register index-->
-    <type name="Mirasvit\Search\Api\Repository\IndexRepositoryInterface">
+    <type name="Mirasvit\Search\Repository\IndexRepository">
         <arguments>
-            <argument name="indices" xsi:type="array">
-                <item name="magento_review_review" xsi:type="string">Mirasvit\SearchExtended\Index\Magento\Review\Review\Index</item>
+            <argument name="indexes" xsi:type="array">
+                <item name="magento_review" xsi:type="string">Mirasvit\SearchExtended\Index\Magento\Review\Index</item>
             </argument>
         </arguments>
     </type>
 
-    <!--register index provider for native magento mysql search-->
-    <type name="Magento\Framework\Search\Adapter\Mysql\Mapper">
+    <type name="Magento\Elasticsearch\Model\Adapter\FieldMapperInterface">
+        <arguments>
+            <argument name="fieldMappers" xsi:type="array">
+                <item name="magento_review" xsi:type="string">Mirasvit\Search\Adapter\GenericFieldMapper</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\Elasticsearch\Model\Adapter\BatchDataMapper\DataMapperFactory">
+        <arguments>
+            <argument name="dataMappers" xsi:type="array">
+                <item name="magento_review" xsi:type="string">Mirasvit\SearchExtended\Index\Magento\Review\BatchDataMapper</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\Elasticsearch\SearchAdapter\Aggregation\Builder">
+        <arguments>
+            <argument name="dataProviderContainer" xsi:type="array">
+                <item name="magento_review" xsi:type="object">Mirasvit\Search\Adapter\GenericAggregationDataProvider</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Mirasvit\SearchAutocomplete\Model\IndexProvider">
+        <arguments>
+            <argument name="providers" xsi:type="array">
+                <item name="magento_review" xsi:type="string">Mirasvit\SearchExtended\Index\Magento\Review\InstantProvider</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Mirasvit\SearchMysql\SearchAdapter\Mapper">
         <arguments>
             <argument name="indexProviders" xsi:type="array">
-                <item name="magento_review_review" xsi:type="object">Mirasvit\Search\Model\Adapter\Mapper\IndexBuilder</item>
+                <item name="magento_review" xsi:type="object">Mirasvit\SearchMysql\SearchAdapter\Mapper\IndexBuilder</item>
             </argument>
         </arguments>
     </type>
 
-    <!--registering data provider for native magento mysql search-->
-    <type name="Magento\Framework\Search\Adapter\Mysql\Aggregation\DataProviderContainer">
+    <type name="Mirasvit\SearchMysql\SearchAdapter\Aggregation\DataProviderContainer">
         <arguments>
             <argument name="dataProviders" xsi:type="array">
-                <item name="magento_review_review" xsi:type="object">Mirasvit\Search\Model\Adapter\Aggregation\DataProvider</item>
+                <item name="magento_review" xsi:type="object">Mirasvit\SearchMysql\SearchAdapter\Aggregation\DataProvider</item>
             </argument>
         </arguments>
     </type>
