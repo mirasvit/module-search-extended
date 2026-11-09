@@ -64,7 +64,11 @@ class Index extends AbstractIndex
      */
     public function buildSearchCollection(): Collection
     {
-        $collection = $this->collectionFactory->create();
+        // The index is rebuilt only on a full reindex, so a review un-approved or removed from
+        // the store after indexing must be filtered out here, not only in getIndexableDocuments().
+        $collection = $this->collectionFactory->create()
+            ->addStatusFilter(Review::STATUS_APPROVED)
+            ->addStoreFilter((int)$this->context->getStoreManager()->getStore()->getId());
         $this->context->getSearcher()->joinMatches($collection, 'main_table.review_id');
 
         return $collection;
